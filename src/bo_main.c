@@ -9,6 +9,22 @@
 
 #include "SDL.h"
 
+/**
+ *
+ * TODO
+ *
+ * ADD points
+ * ADD frame-rate independent phisics
+ * ADD levels
+ * ADD normal colours
+ * ADD mouse steerign
+ * ADD corner bounces
+ * ADD ball speed change
+ *
+ * FIX paddle - ball colisions
+ *
+ */
+
 #define CHECK_SUCCESS(X, MSG)                   \
     do                                          \
     {                                           \
@@ -35,7 +51,7 @@ int main(int argc, char *argv[])
     BO_Vector2D paddle_velocity = BO_Vector2D_create();
 
     BO_Entity ball = {.rectangle = BO_Rectangle_create_xy(300.0f, 400.0f, 10.0f, 10.0f), .r = 0xff, .g = 0xff, .b = 0xff};
-    BO_Vector2D ball_velocity = BO_Vector2D_create_xy(0.0f, 0.5f);
+    BO_Vector2D ball_velocity = BO_Vector2D_create_xy(1.0f, -1.0f);
 
     BO_List *entities = NULL;
     CHECK_SUCCESS(BO_List_assign(&entities), "failed to assign entities list");
@@ -60,8 +76,8 @@ int main(int argc, char *argv[])
     bool keys_to_process = true;
 
     BO_KeyEvent key_event;
-    uint64_t fps_cap = 60;
-    uint64_t framerate_cap = 1000 / 60;
+    uint64_t fps_cap = 100;
+    uint64_t framerate_cap = 1000 / fps_cap;
 
     while (running)
     {
@@ -69,12 +85,34 @@ int main(int argc, char *argv[])
         keys_to_process = true;
         while (keys_to_process)
         {
+
             BO_Result event_resut = BO_Window_get_event(window, &key_event);
             if (event_resut == BO_SUCCESS)
             {
-                if (key_event.key_type == BO_KEY_QUIT)
+                switch (key_event.key_type)
                 {
+                case BO_KEY_QUIT:
+                    printf("exiting\n");
                     running = false;
+                    goto end;
+                    break;
+                case BO_KEY_LEFT:
+                    if (key_event.key_state == BO_KEYSTATE_DOWN)
+                    {
+                        paddle_velocity.x = -1.0f;
+                    }
+                    else
+                        paddle_velocity.x = 0.0f;
+                    break;
+                case BO_KEY_RIGHT:
+                    if (key_event.key_state == BO_KEYSTATE_DOWN)
+                        paddle_velocity.x = 1.0f;
+                    else
+                        paddle_velocity.x = 0.0f;
+                    break;
+
+                default:
+                    break;
                 }
             }
             else if (event_resut == BO_NO_MORE_EVENTS)
@@ -88,8 +126,9 @@ int main(int argc, char *argv[])
             }
         }
 
-        // padle here
+        BO_update_paddle(&paddle, &paddle_velocity);
         BO_update_ball(&ball, &ball_velocity);
+
         BO_handle_collisions(entities, &ball, &ball_velocity, &paddle);
 
         BO_List_iterator_reset(entities, &itr);
@@ -106,13 +145,13 @@ int main(int argc, char *argv[])
 
         BO_Graphics_post_render(window);
 
-        uint64_t delta = SDL_GetTicks() - loop_start;
-        if (delta < framerate_cap)
-        {
-            SDL_Delay(framerate_cap - delta);
-        }
+        // uint64_t delta = SDL_GetTicks() - loop_start;
+        // if (delta < framerate_cap)
+        // {
+        //     SDL_Delay(framerate_cap - delta);
+        // }
     }
-
+end:
     BO_Window_destroy(window);
     return 0;
 }

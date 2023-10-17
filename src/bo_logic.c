@@ -49,12 +49,31 @@ void BO_update_ball(BO_Entity *ball, BO_Vector2D *velocity)
 
     if (ball->rectangle.position.x < 0.0f || ball->rectangle.position.x > 600.0f)
     {
-        velocity->y *= 1.0f;
+        velocity->x *= -1.0f;
+    }
+}
+
+void BO_update_paddle(BO_Entity *paddle, BO_Vector2D *velocity)
+{
+
+    BO_vector2D_add(&paddle->rectangle.position, velocity);
+
+    if (paddle->rectangle.position.x < 0.0f)
+    {
+        paddle->rectangle.position.x = 0.0f;
+        velocity->x *= 0.0f;
+    }
+
+    if (paddle->rectangle.position.x + paddle->rectangle.width > 600.0f)
+    {
+        paddle->rectangle.position.x = 0.0f;
+        paddle->rectangle.position.x = 600.0f - paddle->rectangle.width;
     }
 }
 
 bool BO_check_collision(const BO_Entity *entity1, const BO_Entity *entity2)
 {
+
     // Calculate the coordinates of the left, right, top, and bottom edges of each rectangle.
     // float left1 = entity1->rectangle.position.x;
     // float right1 = entity1->rectangle.position.x + entity1->rectangle.width;
@@ -68,10 +87,10 @@ bool BO_check_collision(const BO_Entity *entity1, const BO_Entity *entity2)
 
     // Check for collision by comparing the edges of the rectangles and return the result.
     return (
-        (entity1->rectangle.position.x < entity2->rectangle.position.x + entity2->rectangle.width) && // right1 < left2
-        (entity1->rectangle.position.x > entity2->rectangle.position.x + entity2->rectangle.width) && // left1 > right2
-        (entity1->rectangle.position.y < entity2->rectangle.position.y) &&                            // bottom1 < top2
-        (entity1->rectangle.position.y > entity2->rectangle.position.y + entity2->rectangle.height)); // top1 > bottom2
+        (entity1->rectangle.position.x < entity2->rectangle.position.x + entity2->rectangle.width) &&
+        (entity1->rectangle.position.x + entity1->rectangle.width > entity2->rectangle.position.x) &&
+        (entity1->rectangle.position.y < entity2->rectangle.position.y + entity2->rectangle.height) &&
+        (entity1->rectangle.height + entity1->rectangle.position.y > entity2->rectangle.position.y));
 }
 
 void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle)
@@ -97,14 +116,12 @@ void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_
 
             BO_List_iterator_advance(&itr);
         }
-
         BO_List_iterator_destroy(itr);
     }
 
     if (BO_check_collision(ball, paddle))
     {
         // simple very
-        ball_velocity->x *= -1.0f;
         ball_velocity->y *= -1.0f;
     }
 }
