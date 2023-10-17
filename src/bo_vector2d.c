@@ -5,7 +5,7 @@
 
 BO_Vector2D BO_Vector2D_create()
 {
-    return BO_Vector2D_create(0.0f, 0.0f);
+    return BO_Vector2D_create_xy(0.0f, 0.0f);
 }
 
 BO_Vector2D BO_Vector2D_create_xy(float x, float y)

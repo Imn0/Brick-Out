@@ -157,7 +157,8 @@ void BO_List_iterator_reset(const BO_List *list, BO_ListItr **itr)
 {
     assert(*itr != NULL);
 
-    (*itr)->node = list->head;
+    // head empty
+    (*itr)->node = list->head->next;
 }
 
 bool BO_List_iterator_at_end(BO_ListItr *itr)

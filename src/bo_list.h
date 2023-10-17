@@ -7,6 +7,9 @@
  * Simple linked list.
  */
 
+/**
+ * To handle list data.
+ */
 typedef struct BO_Node
 {
     void *value;
@@ -14,9 +17,6 @@ typedef struct BO_Node
     void (*dtor)(void *);
 } BO_Node;
 
-/**
- * To handle list data.
- */
 typedef struct BO_List
 {
     BO_Node *head;
