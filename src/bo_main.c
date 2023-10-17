@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 
     BO_KeyEvent key_event;
     uint64_t fps_cap = 60;
-    uint64_t framerate_cap = 1000.0f / 60.0f;
+    uint64_t framerate_cap = 1000 / 60;
 
     while (running)
     {
