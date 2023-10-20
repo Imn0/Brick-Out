@@ -1,3 +1,4 @@
+#include "defines.h"
 #include "bo_graphics.h"
 #include "bo_window.h"
 #include "bo_result.h"
@@ -13,7 +14,7 @@
  *
  * TODO
  *
- * ADD points
+ * ADD points rendering
  * ADD frame-rate independent phisics
  * ADD levels
  * ADD normal colours
@@ -51,7 +52,7 @@ int main(int argc, char *argv[])
     BO_Vector2D paddle_velocity = BO_Vector2D_create();
 
     BO_Entity ball = {.rectangle = BO_Rectangle_create_xy(300.0f, 400.0f, 10.0f, 10.0f), .r = 0xff, .g = 0xff, .b = 0xff};
-    BO_Vector2D ball_velocity = BO_Vector2D_create_xy(1.0f, -1.0f);
+    BO_Vector2D ball_velocity = BO_Vector2D_create_xy(2.0f, -2.0f);
 
     BO_List *entities = NULL;
     CHECK_SUCCESS(BO_List_assign(&entities), "failed to assign entities list");
@@ -78,10 +79,13 @@ int main(int argc, char *argv[])
     BO_KeyEvent key_event;
     uint64_t fps_cap = 100;
     uint64_t framerate_cap = 1000 / fps_cap;
+    uint64_t points = 0;
+    uint64_t game_start = SDL_GetTicks64();
+    printf("%" PRIu64 "\n", game_start);
 
     while (running)
     {
-        int loop_start = SDL_GetTicks64();
+        uint64_t loop_start = SDL_GetTicks64();
         keys_to_process = true;
         while (keys_to_process)
         {
@@ -99,14 +103,14 @@ int main(int argc, char *argv[])
                 case BO_KEY_LEFT:
                     if (key_event.key_state == BO_KEYSTATE_DOWN)
                     {
-                        paddle_velocity.x = -1.0f;
+                        paddle_velocity.x = -2.0f;
                     }
                     else
                         paddle_velocity.x = 0.0f;
                     break;
                 case BO_KEY_RIGHT:
                     if (key_event.key_state == BO_KEYSTATE_DOWN)
-                        paddle_velocity.x = 1.0f;
+                        paddle_velocity.x = 2.0f;
                     else
                         paddle_velocity.x = 0.0f;
                     break;
@@ -131,6 +135,13 @@ int main(int argc, char *argv[])
 
         BO_handle_collisions(entities, &ball, &ball_velocity, &paddle);
 
+        uint64_t new_points = (loop_start - game_start) / 1000;
+        if (new_points != points)
+        {
+            points = new_points;
+            printf("%" PRIu64 "\n", points);
+        }
+
         BO_List_iterator_reset(entities, &itr);
 
         BO_Graphics_pre_render(window);
@@ -145,11 +156,11 @@ int main(int argc, char *argv[])
 
         BO_Graphics_post_render(window);
 
-        // uint64_t delta = SDL_GetTicks() - loop_start;
-        // if (delta < framerate_cap)
-        // {
-        //     SDL_Delay(framerate_cap - delta);
-        // }
+        uint64_t delta = SDL_GetTicks() - loop_start;
+        if (delta < framerate_cap)
+        {
+            SDL_Delay(framerate_cap - delta);
+        }
     }
 end:
     BO_Window_destroy(window);

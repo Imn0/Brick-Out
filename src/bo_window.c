@@ -1,3 +1,4 @@
+#include "defines.h"
 #include "bo_window.h"
 #include "bo_key_events.h"
 #include "bo_result.h"
@@ -48,7 +49,7 @@ BO_Result BO_Window_create(BO_Window **window)
         goto fail;
     }
 
-    new_window->sdl_window = SDL_CreateWindow("Break Out", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 600, 800, SDL_WINDOW_SHOWN);
+    new_window->sdl_window = SDL_CreateWindow("Break Out", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, BO_Window_w, BO_Window_h, SDL_WINDOW_SHOWN);
     if (new_window->sdl_window == NULL)
     {
         result = BO_FAILED_TO_CREATE_WINDOW;
@@ -107,6 +108,14 @@ BO_Result BO_Window_get_event(const BO_Window *window, BO_KeyEvent *key_event)
     if (SDL_PollEvent(&sdl_event) != 0)
     {
         bool try_map = false;
+
+        // for exiting using 'x'
+        if (sdl_event.type == SDL_WINDOWEVENT && sdl_event.window.event == SDL_WINDOWEVENT_CLOSE)
+        {
+            key_event->key_state = BO_KEYSTATE_DOWN;
+            key_event->key_type = BO_KEY_QUIT;
+            return BO_SUCCESS;
+        }
 
         if (sdl_event.type == SDL_KEYDOWN)
         {
