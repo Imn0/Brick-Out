@@ -9,6 +9,11 @@
 #include <stdio.h>
 
 #include "SDL.h"
+#include <SDL2/SDL_image.h>
+#include "SDL2/SDL_ttf.h"
+// #include <SDL2/SDL.h>
+// #include <SDL3_image/SDL_image.h>
+// #include <SDL2/SDL_ttf.h>
 
 /**
  *
@@ -47,7 +52,6 @@ void test()
 
 int main(int argc, char *argv[])
 {
-    // test();
     BO_Entity paddle = {.rectangle = BO_Rectangle_create_xy(300.0f, 750.0f, 80.0f, 20.0f), .r = 0xff, .g = 0x00, .b = 0x00};
     BO_Vector2D paddle_velocity = BO_Vector2D_create();
 
@@ -60,12 +64,8 @@ int main(int argc, char *argv[])
     CHECK_SUCCESS(BO_List_push_back(entities, &paddle), "failed to add paddle");
     CHECK_SUCCESS(BO_List_push_back(entities, &ball), "failed to add ball");
 
-    BO_create_row(entities, 30.0f, 0xff, 0x00, 0x00);
-    BO_create_row(entities, 60.0f, 0xff, 0x00, 0x00);
-    BO_create_row(entities, 90.0f, 0xff, 0x00, 0x00);
-    BO_create_row(entities, 120.0f, 0xff, 0x00, 0x00);
-    BO_create_row(entities, 150.0f, 0xff, 0x00, 0x00);
-    BO_create_row(entities, 180.0f, 0xff, 0x00, 0x00);
+    BO_init_ui(entities);
+    BO_init_blocks(entities);
 
     BO_ListItr *itr = NULL;
     CHECK_SUCCESS(BO_List_iterator_assign_list(entities, &itr), "failed to assign itr");
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
                 switch (key_event.key_type)
                 {
                 case BO_KEY_QUIT:
-                    printf("exiting\n");
+                    printf("bye\n");
                     running = false;
                     goto end;
                     break;

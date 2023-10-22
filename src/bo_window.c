@@ -112,6 +112,7 @@ BO_Result BO_Window_get_event(const BO_Window *window, BO_KeyEvent *key_event)
         // for exiting using 'x'
         if (sdl_event.type == SDL_WINDOWEVENT && sdl_event.window.event == SDL_WINDOWEVENT_CLOSE)
         {
+            printf("exiting...\n");
             key_event->key_state = BO_KEYSTATE_DOWN;
             key_event->key_type = BO_KEY_QUIT;
             return BO_SUCCESS;
