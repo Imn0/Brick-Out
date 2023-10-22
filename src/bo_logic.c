@@ -16,22 +16,6 @@
         }                                       \
     } while (false)
 
-void BO_init_ui(BO_List *entities)
-{
-    BO_Entity *ui = (BO_Entity *)calloc(1, sizeof(BO_Entity));
-    ui->rectangle.position.x = 0;
-    ui->rectangle.position.y = 0;
-
-    ui->rectangle.width = BO_play_boundry_w;
-    ui->rectangle.height = BO_play_boundry_h_top;
-
-    ui->r = 100;
-    ui->g = 90;
-    ui->b = 240;
-
-    CHECK_SUCCESS(BO_List_push_back_dtor(entities, ui, &free), "Brick add fail");
-}
-
 void BO_init_blocks(BO_List *entities)
 {
     BO_create_row(entities, BO_play_boundry_h_top, 0xff, 0x00, 0x00);
@@ -114,8 +98,9 @@ void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_
         BO_ListItr *itr;
         CHECK_SUCCESS(BO_List_iterator_assign_list(entities, &itr), "itr assign error");
 
-        BO_List_iterator_advance(&itr);
-        BO_List_iterator_advance(&itr);
+        BO_List_iterator_advance(&itr); // paddle
+        BO_List_iterator_advance(&itr); // ball
+        BO_List_iterator_advance(&itr); // ui thing
 
         while (!BO_List_iterator_at_end(itr))
         {

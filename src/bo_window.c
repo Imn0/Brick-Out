@@ -49,7 +49,7 @@ BO_Result BO_Window_create(BO_Window **window)
         goto fail;
     }
 
-    new_window->sdl_window = SDL_CreateWindow("Break Out", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, BO_Window_w, BO_Window_h, SDL_WINDOW_SHOWN);
+    new_window->sdl_window = SDL_CreateWindow("Brick Out", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, BO_Window_w, BO_Window_h, SDL_WINDOW_SHOWN);
     if (new_window->sdl_window == NULL)
     {
         result = BO_FAILED_TO_CREATE_WINDOW;

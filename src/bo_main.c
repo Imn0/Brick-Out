@@ -58,13 +58,15 @@ int main(int argc, char *argv[])
     BO_Entity ball = {.rectangle = BO_Rectangle_create_xy(300.0f, 400.0f, 10.0f, 10.0f), .r = 0xff, .g = 0xff, .b = 0xff};
     BO_Vector2D ball_velocity = BO_Vector2D_create_xy(2.0f, -2.0f);
 
+    BO_Entity ui = {.rectangle = BO_Rectangle_create_xy(0.0f, 0.0f, BO_play_boundry_w, BO_play_boundry_h_top), .r = 0x00, .g = 0xff, .b = 0x00};
+
     BO_List *entities = NULL;
     CHECK_SUCCESS(BO_List_assign(&entities), "failed to assign entities list");
 
     CHECK_SUCCESS(BO_List_push_back(entities, &paddle), "failed to add paddle");
     CHECK_SUCCESS(BO_List_push_back(entities, &ball), "failed to add ball");
+    CHECK_SUCCESS(BO_List_push_back(entities, &ui), "failed to add ui element");
 
-    BO_init_ui(entities);
     BO_init_blocks(entities);
 
     BO_ListItr *itr = NULL;
