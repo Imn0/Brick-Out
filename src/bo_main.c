@@ -9,11 +9,8 @@
 #include <stdio.h>
 
 #include "SDL.h"
-#include <SDL2/SDL_image.h>
+#include "SDL2/SDL_image.h"
 #include "SDL2/SDL_ttf.h"
-// #include <SDL2/SDL.h>
-// #include <SDL3_image/SDL_image.h>
-// #include <SDL2/SDL_ttf.h>
 
 /**
  *
@@ -52,6 +49,20 @@ void test()
 
 int main(int argc, char *argv[])
 {
+    TTF_Init();
+    TTF_Font *Pixel = TTF_OpenFont("pixel_font.ttf", 24);
+
+    SDL_Color White = {255, 255, 255};
+
+    SDL_Surface *surfaceMessage =
+        TTF_RenderText_Solid(Pixel, "TEST", White);
+
+    SDL_Rect Message_rect; // create a rect
+    Message_rect.x = 300;  // controls the rect's x coordinate
+    Message_rect.y = 0;    // controls the rect's y coordinte
+    Message_rect.w = 100;  // controls the width of the rect
+    Message_rect.h = 48;   // controls the height of the rect
+
     BO_Entity paddle = {.rectangle = BO_Rectangle_create_xy(300.0f, 750.0f, 80.0f, 20.0f), .r = 0xff, .g = 0x00, .b = 0x00};
     BO_Vector2D paddle_velocity = BO_Vector2D_create();
 
@@ -74,6 +85,8 @@ int main(int argc, char *argv[])
 
     BO_Window *window;
     CHECK_SUCCESS(BO_Window_create(&window), "failed to window");
+
+    SDL_Texture *Message = SDL_CreateTextureFromSurface(window->sdl_renderer, surfaceMessage);
 
     bool running = true;
     bool keys_to_process = true;
@@ -155,8 +168,10 @@ int main(int argc, char *argv[])
 
             BO_List_iterator_advance(&itr);
         }
+        SDL_RenderCopy(window->sdl_renderer, Message, NULL, &Message_rect);
 
-        BO_Graphics_post_render(window);
+        // BO_Graphics_post_render(window);
+        SDL_RenderPresent(window->sdl_renderer);
 
         uint64_t delta = SDL_GetTicks() - loop_start;
         if (delta < framerate_cap)
