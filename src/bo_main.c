@@ -54,9 +54,6 @@ int main(int argc, char *argv[])
 
     SDL_Color White = {255, 255, 255};
 
-    SDL_Surface *surfaceMessage =
-        TTF_RenderText_Solid(Pixel, "TEST", White);
-
     SDL_Rect Message_rect; // create a rect
     Message_rect.x = 300;  // controls the rect's x coordinate
     Message_rect.y = 0;    // controls the rect's y coordinte
@@ -86,8 +83,6 @@ int main(int argc, char *argv[])
     BO_Window *window;
     CHECK_SUCCESS(BO_Window_create(&window), "failed to window");
 
-    SDL_Texture *Message = SDL_CreateTextureFromSurface(window->sdl_renderer, surfaceMessage);
-
     bool running = true;
     bool keys_to_process = true;
 
@@ -96,7 +91,6 @@ int main(int argc, char *argv[])
     uint64_t framerate_cap = 1000 / fps_cap;
     uint64_t points = 0;
     uint64_t game_start = SDL_GetTicks64();
-    printf("%" PRIu64 "\n", game_start);
 
     while (running)
     {
@@ -150,11 +144,11 @@ int main(int argc, char *argv[])
 
         BO_handle_collisions(entities, &ball, &ball_velocity, &paddle);
 
+        // points calculation
         uint64_t new_points = (loop_start - game_start) / 1000;
         if (new_points != points)
         {
             points = new_points;
-            printf("%" PRIu64 "\n", points);
         }
 
         BO_List_iterator_reset(entities, &itr);
@@ -168,6 +162,14 @@ int main(int argc, char *argv[])
 
             BO_List_iterator_advance(&itr);
         }
+
+        // points rendering
+        char str[256];
+        sprintf(str, "%lu", points);
+        SDL_Surface *surfaceMessage =
+            TTF_RenderText_Solid(Pixel, str, White);
+
+        SDL_Texture *Message = SDL_CreateTextureFromSurface(window->sdl_renderer, surfaceMessage);
         SDL_RenderCopy(window->sdl_renderer, Message, NULL, &Message_rect);
 
         // BO_Graphics_post_render(window);
