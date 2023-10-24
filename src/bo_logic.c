@@ -119,10 +119,39 @@ void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_
         BO_List_iterator_destroy(itr);
     }
 
-    if (BO_check_collision(ball, paddle))
+    BO_ball_paddle_colision(ball, ball_velocity, paddle);
+}
+
+// add corner bounces
+void BO_ball_paddle_colision(const BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle)
+{
+    // ball is too high
+    if (ball->rectangle.position.y + ball->rectangle.height < paddle->rectangle.position.y)
     {
-        // simple very
+        return;
+    }
+    // ball is too low
+    if (ball->rectangle.position.y > paddle->rectangle.position.y + paddle->rectangle.height)
+    {
+        return;
+    }
+
+    // ball is in the middle
+    if ((ball->rectangle.position.x > paddle->rectangle.position.x) && (ball->rectangle.position.x + ball->rectangle.width < paddle->rectangle.position.x + paddle->rectangle.width))
+    {
         ball_velocity->y *= -1.0f;
-        ball->rectangle.position.x += 1.0f;
+    }
+
+    // here add corner bounces
+
+    // ball bounced from right
+    if (ball->rectangle.position.x < paddle->rectangle.position.x + paddle->rectangle.width && ball->rectangle.position.x + ball->rectangle.width > paddle->rectangle.position.x + paddle->rectangle.width)
+    {
+        ball_velocity->x *= -1.0f;
+    }
+    // ball bounced from left
+    if (ball->rectangle.position.x + ball->rectangle.width > paddle->rectangle.position.x && ball->rectangle.position.x < paddle->rectangle.position.x)
+    {
+        ball_velocity->x *= -1.0f;
     }
 }
