@@ -50,7 +50,7 @@ void test()
 int main(int argc, char *argv[])
 {
     TTF_Init();
-    TTF_Font *Pixel = TTF_OpenFont("pixel_font.ttf", 24);
+    TTF_Font *Pixel = TTF_OpenFont("../data/fonts/PixelForce.ttf", 24);
 
     SDL_Color White = {255, 255, 255};
 
