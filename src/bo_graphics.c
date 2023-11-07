@@ -8,8 +8,7 @@ BO_Result BO_Graphics_pre_render(const BO_Window *window)
     BO_Result result = BO_SUCCESS;
 
     // clear the window to black
-
-    if (SDL_SetRenderDrawColor(window->sdl_renderer, 0x0, 0x0, 0x0, 0x0) != 0)
+    if (SDL_SetRenderDrawColor(window->sdl_renderer, 208, 121, 145, 255) != 0)
     {
         result = BO_FAILED_TO_SET_RENDER_COLOUR;
         goto ret;

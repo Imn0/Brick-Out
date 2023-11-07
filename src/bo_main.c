@@ -11,6 +11,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <math.h>
 
 /**
  *
@@ -39,14 +40,6 @@
         }                                       \
     } while (false)
 
-void test()
-{
-    printf("start\n");
-    BO_Entity paddle = {.rectangle = BO_Rectangle_create_xy(300.0f, 750.0f, 80.0f, 20.0f), .r = 0xff, .g = 0x00, .b = 0x00};
-    BO_Vector2D paddle_velocity = BO_Vector2D_create();
-    printf("end\n");
-}
-
 int main(int argc, char *argv[])
 {
     TTF_Init();
@@ -54,19 +47,12 @@ int main(int argc, char *argv[])
 
     SDL_Color White = {255, 255, 255};
 
-    SDL_Rect Message_rect; // create a rect
-    Message_rect.x = 300;  // controls the rect's x coordinate
-    Message_rect.y = 0;    // controls the rect's y coordinte
-    Message_rect.w = 100;  // controls the width of the rect
-    Message_rect.h = 48;   // controls the height of the rect
-
-    BO_Entity paddle = {.rectangle = BO_Rectangle_create_xy(300.0f, BO_paddle_paddle_y, 80.0f, BO_paddle_height), .r = 0xff, .g = 0x00, .b = 0x00};
+    BO_Entity paddle = {.rectangle = BO_Rectangle_create_xy(300.0f, BO_paddle_paddle_y, 80.0f, BO_paddle_height), .r = 0xaa, .g = 0x33, .b = 0x6a};
     BO_Vector2D paddle_velocity = BO_Vector2D_create();
 
-    BO_Entity ball = {.rectangle = BO_Rectangle_create_xy(300.0f, 400.0f, 10.0f, 10.0f), .r = 0xff, .g = 0xff, .b = 0xff};
-    BO_Vector2D ball_velocity = BO_Vector2D_create_xy(2.0f, -2.0f);
-
-    BO_Entity ui = {.rectangle = BO_Rectangle_create_xy(0.0f, 0.0f, BO_play_boundry_w, BO_play_boundry_h_top), .r = 0x00, .g = 0xff, .b = 0x00};
+    BO_Entity ball = {.rectangle = BO_Rectangle_create_xy(300.0f, 400.0f, 10.0f, 10.0f), .r = 0x00, .g = 0x00, .b = 0x00};
+    BO_Vector2D ball_velocity = BO_Vector2D_create_angle_length(45.0f, BO_ball_desired_velocity);
+    BO_Entity ui = {.rectangle = BO_Rectangle_create_xy(0.0f, 0.0f, BO_play_boundry_w, BO_play_boundry_h_top), .r = 0xaa, .g = 0x33, .b = 0x6a};
 
     BO_List *entities = NULL;
     CHECK_SUCCESS(BO_List_assign(&entities), "failed to assign entities list");
@@ -166,9 +152,12 @@ int main(int argc, char *argv[])
         // points rendering
         char str[256];
         sprintf(str, "%lu", points);
-        SDL_Surface *surfaceMessage =
-            TTF_RenderText_Solid(Pixel, str, White);
-
+        SDL_Surface *surfaceMessage = TTF_RenderText_Solid(Pixel, str, White);
+        SDL_Rect Message_rect;                          // create a rect
+        Message_rect.x = 300;                           // controls the rect's x coordinate
+        Message_rect.y = 0;                             // controls the rect's y coordinte
+        Message_rect.w = 33 * ((int)log10(points) + 1); // controls the width of the rect
+        Message_rect.h = 48;                            // controls the height of the rect
         SDL_Texture *Message = SDL_CreateTextureFromSurface(window->sdl_renderer, surfaceMessage);
         SDL_RenderCopy(window->sdl_renderer, Message, NULL, &Message_rect);
 

@@ -30,6 +30,20 @@ BO_Vector2D BO_Vector2D_create();
 BO_Vector2D BO_Vector2D_create_xy(float x, float y);
 
 /**
+ * Create vector supplied values.
+ *
+ * @param angle
+ *   angle, 0 is vertical up, 90 is horizontal right.
+ *
+ * @param length
+ *  length of vector.
+ *
+ * @returns
+ * vector with x and y.
+ */
+BO_Vector2D BO_Vector2D_create_angle_length(float angle, float length);
+
+/**
  * Add two vectors to each other.
  *
  * @param v

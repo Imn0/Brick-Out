@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 #define CHECK_SUCCESS(X, MSG)                   \
     do                                          \
@@ -18,12 +19,12 @@
 
 void BO_init_blocks(BO_List *entities)
 {
-    BO_create_row(entities, BO_play_boundry_h_top, 0xff, 0x00, 0x00);
-    BO_create_row(entities, BO_play_boundry_h_top + 30.0f, 0xff, 0x00, 0x00);
-    BO_create_row(entities, BO_play_boundry_h_top + 60.0f, 0xff, 0x00, 0x00);
-    BO_create_row(entities, BO_play_boundry_h_top + 90.0f, 0xff, 0x00, 0x00);
-    BO_create_row(entities, BO_play_boundry_h_top + 120.0f, 0xff, 0x00, 0x00);
-    BO_create_row(entities, BO_play_boundry_h_top + 150.0f, 0xff, 0x00, 0x00);
+    BO_create_row(entities, BO_play_boundry_h_top, 0xaa, 0x33, 0x6a);
+    BO_create_row(entities, BO_play_boundry_h_top + 30.0f, 0xaa, 0x33, 0x6a);
+    BO_create_row(entities, BO_play_boundry_h_top + 60.0f, 0xaa, 0x33, 0x6a);
+    BO_create_row(entities, BO_play_boundry_h_top + 90.0f, 0xaa, 0x33, 0x6a);
+    BO_create_row(entities, BO_play_boundry_h_top + 120.0f, 0xaa, 0x33, 0x6a);
+    BO_create_row(entities, BO_play_boundry_h_top + 150.0f, 0xaa, 0x33, 0x6a);
 }
 
 void BO_create_row(BO_List *entities, float y_pos, uint8_t r, uint8_t g, uint8_t b)
@@ -131,33 +132,22 @@ void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_
     }
 }
 
-// add corner bounces
 void BO_ball_paddle_colision(BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle)
 {
-    float bouce_zone = paddle->rectangle.width / 3.0f;
-    if (ball->rectangle.position.x < paddle->rectangle.position.x + bouce_zone)
-    {
-        ball_velocity->x = -2.0f;
-        ball_velocity->y = -2.0f;
-    }
-    else if (ball->rectangle.position.x < paddle->rectangle.position.x + paddle->rectangle.width - bouce_zone)
-    {
-        ball_velocity->x = 0.0f;
-        ball_velocity->y = -2.0f;
-    }
-    else
-    {
-        ball_velocity->x = 2.0f;
-        ball_velocity->y = -2.0f;
-    }
+    float distance_from_middle = ball->rectangle.position.x - paddle->rectangle.position.x - paddle->rectangle.width / 2.0f;
+    float percentage = distance_from_middle / (paddle->rectangle.width / 2.0f);
+    float angle = 40.0f * percentage;
+    BO_Vector2D v = BO_Vector2D_create_angle_length(angle, BO_ball_desired_velocity);
+    ball_velocity->x = v.x;
+    ball_velocity->y = v.y;
 }
 
 void BO_reset_ball(BO_Entity *ball, BO_Vector2D *ball_velocity)
 {
     ball->rectangle.position.x = 300.0f;
     ball->rectangle.position.y = 400.0f;
-    ball_velocity->x = 2.0f;
-    ball_velocity->y = -2.0f;
+    ball_velocity->x = 0.0f;
+    ball_velocity->y = -BO_ball_desired_velocity;
 }
 
 bool BO_check_loose(BO_Entity *ball)

@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <math.h>
 
 BO_Vector2D BO_Vector2D_create()
 {
@@ -11,6 +12,18 @@ BO_Vector2D BO_Vector2D_create()
 BO_Vector2D BO_Vector2D_create_xy(float x, float y)
 {
     BO_Vector2D v = {.x = x, .y = y};
+    return v;
+}
+
+BO_Vector2D BO_Vector2D_create_angle_length(float angle, float length)
+{
+    BO_Vector2D v = {.x = 0.0f, .y = -1.0f};
+    angle -= 90.0f;
+    angle = angle / 180.0f * 3.14159265358f;
+
+    v.x = length * cos(angle);
+    v.y = length * sin(angle);
+
     return v;
 }
 

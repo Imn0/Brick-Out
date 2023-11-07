@@ -6,9 +6,12 @@
 typedef struct BO_Rectangle
 {
     BO_Vector2D position;
+    BO_Vector2D middle;
     float width;
     float height;
 } BO_Rectangle;
+
+BO_Vector2D BO_Rectangle_get_middle(BO_Rectangle *rectangle);
 
 BO_Rectangle BO_Rectangle_create(const BO_Vector2D *position, float width, float height);
 

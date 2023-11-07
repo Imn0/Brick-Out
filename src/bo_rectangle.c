@@ -2,14 +2,24 @@
 
 #include <stdio.h>
 
+BO_Vector2D BO_Rectangle_get_middle(BO_Rectangle *rectangle)
+{
+    BO_Vector2D middle = {.x = rectangle->position.x + rectangle->width / 2.0f,
+                          .y = rectangle->position.y + rectangle->height / 2.0f};
+    return middle;
+}
+
 BO_Rectangle BO_Rectangle_create(const BO_Vector2D *position, float width, float height)
 {
-    return BO_Rectangle_create_xy(position->x, position->y, width, height);
+    BO_Rectangle rectangle = {.position = *position, .height = height, .width = width};
+    rectangle.middle = BO_Rectangle_get_middle(&rectangle);
+    return rectangle;
 }
 
 BO_Rectangle BO_Rectangle_create_xy(float x, float y, float width, float height)
 {
     BO_Rectangle rectangle = {.position = {.x = x, .y = y}, .height = height, .width = width};
+    rectangle.middle = BO_Rectangle_get_middle(&rectangle);
     return rectangle;
 }
 
