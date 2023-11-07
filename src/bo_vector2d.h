@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BO_VECTOR2D_H
+#define BO_VECTOR2D_H
 
 typedef struct BO_Vector2D
 {
@@ -58,3 +59,5 @@ void BO_vector2D_add_xy(BO_Vector2D *v, float x, float y);
  * print vector to std out
  */
 void BO_vector_show(const BO_Vector2D *v);
+
+#endif // BO_VECTOR2D_H

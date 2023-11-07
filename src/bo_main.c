@@ -8,9 +8,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "SDL.h"
-#include "SDL2/SDL_image.h"
-#include "SDL2/SDL_ttf.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 /**
  *
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     Message_rect.w = 100;  // controls the width of the rect
     Message_rect.h = 48;   // controls the height of the rect
 
-    BO_Entity paddle = {.rectangle = BO_Rectangle_create_xy(300.0f, 750.0f, 80.0f, 20.0f), .r = 0xff, .g = 0x00, .b = 0x00};
+    BO_Entity paddle = {.rectangle = BO_Rectangle_create_xy(300.0f, BO_paddle_paddle_y, 80.0f, BO_paddle_height), .r = 0xff, .g = 0x00, .b = 0x00};
     BO_Vector2D paddle_velocity = BO_Vector2D_create();
 
     BO_Entity ball = {.rectangle = BO_Rectangle_create_xy(300.0f, 400.0f, 10.0f, 10.0f), .r = 0xff, .g = 0xff, .b = 0xff};

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BO_RECTANGLE_H
+#define BO_RECTANGLE_H
 
 #include "bo_vector2d.h"
 
@@ -22,3 +23,5 @@ void BO_Rectangle_set_position(BO_Rectangle *rectangle, BO_Vector2D *position);
 void BO_Rectangle_set_position_xy(BO_Rectangle *rectangle, float x, float y);
 
 void BO_Rectangle_show(BO_Rectangle *rectangle);
+
+#endif // BO_RECTANGLE_H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BO_LIST_H
+#define BO_LIST_H
 
 #include "bo_result.h"
 #include <stdbool.h>
@@ -51,3 +52,5 @@ void BO_List_iterator_reset(const BO_List *list, BO_ListItr **itr);
 bool BO_List_iterator_at_end(BO_ListItr *itr);
 
 void *BO_List_iterator_value(const BO_ListItr *itr);
+
+#endif // BO_LIST_H

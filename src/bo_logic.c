@@ -53,9 +53,15 @@ void BO_update_ball(BO_Entity *ball, BO_Vector2D *velocity)
 {
     BO_vector2D_add(&ball->rectangle.position, velocity);
 
-    if (ball->rectangle.position.y < BO_play_boundry_h_top || ball->rectangle.position.y > BO_play_boundry_h_bot)
+    if (BO_check_loose(ball))
+    {
+        BO_reset_ball(ball, velocity);
+    }
+
+    if (ball->rectangle.position.y < BO_play_boundry_h_top)
     {
         velocity->y *= -1.0f;
+        ball->rectangle.position.y += 5.0f;
     }
 
     if (ball->rectangle.position.x < 0.0f || ball->rectangle.position.x > 600.0f)
@@ -119,39 +125,46 @@ void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_
         BO_List_iterator_destroy(itr);
     }
 
-    BO_ball_paddle_colision(ball, ball_velocity, paddle);
+    if (BO_check_collision(ball, paddle))
+    {
+        BO_ball_paddle_colision(ball, ball_velocity, paddle);
+    }
 }
 
 // add corner bounces
-void BO_ball_paddle_colision(const BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle)
+void BO_ball_paddle_colision(BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle)
 {
-    // ball is too high
-    if (ball->rectangle.position.y + ball->rectangle.height < paddle->rectangle.position.y)
+    float bouce_zone = paddle->rectangle.width / 3.0f;
+    if (ball->rectangle.position.x < paddle->rectangle.position.x + bouce_zone)
     {
-        return;
+        ball_velocity->x = -2.0f;
+        ball_velocity->y = -2.0f;
     }
-    // ball is too low
-    if (ball->rectangle.position.y > paddle->rectangle.position.y + paddle->rectangle.height)
+    else if (ball->rectangle.position.x < paddle->rectangle.position.x + paddle->rectangle.width - bouce_zone)
     {
-        return;
+        ball_velocity->x = 0.0f;
+        ball_velocity->y = -2.0f;
     }
+    else
+    {
+        ball_velocity->x = 2.0f;
+        ball_velocity->y = -2.0f;
+    }
+}
 
-    // ball is in the middle
-    if ((ball->rectangle.position.x > paddle->rectangle.position.x) && (ball->rectangle.position.x + ball->rectangle.width < paddle->rectangle.position.x + paddle->rectangle.width))
-    {
-        ball_velocity->y *= -1.0f;
-    }
+void BO_reset_ball(BO_Entity *ball, BO_Vector2D *ball_velocity)
+{
+    ball->rectangle.position.x = 300.0f;
+    ball->rectangle.position.y = 400.0f;
+    ball_velocity->x = 2.0f;
+    ball_velocity->y = -2.0f;
+}
 
-    // here add corner bounces
-
-    // ball bounced from right
-    if (ball->rectangle.position.x < paddle->rectangle.position.x + paddle->rectangle.width && ball->rectangle.position.x + ball->rectangle.width > paddle->rectangle.position.x + paddle->rectangle.width)
+bool BO_check_loose(BO_Entity *ball)
+{
+    if (ball->rectangle.position.y > BO_paddle_paddle_y + BO_paddle_height)
     {
-        ball_velocity->x *= -1.0f;
+        return true;
     }
-    // ball bounced from left
-    if (ball->rectangle.position.x + ball->rectangle.width > paddle->rectangle.position.x && ball->rectangle.position.x < paddle->rectangle.position.x)
-    {
-        ball_velocity->x *= -1.0f;
-    }
+    return false;
 }

@@ -3,7 +3,7 @@
 #include "bo_key_events.h"
 #include "bo_result.h"
 
-#include "SDL.h"
+#include <SDL2/SDL.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
