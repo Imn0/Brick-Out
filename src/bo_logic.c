@@ -54,6 +54,20 @@ void BO_update_ball(BO_Entity *ball, BO_Vector2D *velocity)
 {
     BO_vector2D_add(&ball->rectangle.position, velocity);
 
+    float speed = sqrt(velocity->x * velocity->x + velocity->y * velocity->y);
+
+    // to prevent division by 0
+    if (speed < 0.01f)
+    {
+        speed = 0.1f;
+    }
+
+    float factor = BO_ball_desired_speed / speed;
+    factor = factor - 1;
+    factor /= 100.0f;
+    factor += 1;
+    velocity->x *= factor;
+    velocity->y *= factor;
     if (BO_check_loose(ball))
     {
         BO_reset_ball(ball, velocity);
@@ -79,12 +93,12 @@ void BO_update_paddle(BO_Entity *paddle, BO_Vector2D *velocity)
     if (paddle->rectangle.position.x < 0.0f)
     {
         paddle->rectangle.position.x = 0.0f;
-        velocity->x *= 0.0f;
+        velocity->x = 0.0f;
     }
 
     if (paddle->rectangle.position.x + paddle->rectangle.width > 600.0f)
     {
-        paddle->rectangle.position.x = 0.0f;
+        velocity->x = 0.0f;
         paddle->rectangle.position.x = 600.0f - paddle->rectangle.width;
     }
 }
@@ -99,7 +113,7 @@ bool BO_check_collision(const BO_Entity *entity1, const BO_Entity *entity2)
         (entity1->rectangle.height + entity1->rectangle.position.y > entity2->rectangle.position.y));
 }
 
-void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle)
+void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle, const BO_Vector2D *paddle_velocity)
 {
     {
         BO_ListItr *itr;
@@ -128,18 +142,30 @@ void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_
 
     if (BO_check_collision(ball, paddle))
     {
-        BO_ball_paddle_colision(ball, ball_velocity, paddle);
+        BO_ball_paddle_colision(ball, ball_velocity, paddle, paddle_velocity);
     }
 }
 
-void BO_ball_paddle_colision(BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle)
+void BO_ball_paddle_colision(BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle, const BO_Vector2D *paddle_velocity)
 {
     float distance_from_middle = ball->rectangle.position.x - paddle->rectangle.position.x - paddle->rectangle.width / 2.0f;
-    float percentage = distance_from_middle / (paddle->rectangle.width / 2.0f);
-    float angle = 40.0f * percentage;
-    BO_Vector2D v = BO_Vector2D_create_angle_length(angle, BO_ball_desired_velocity);
+    float percentage = abs(distance_from_middle) / (paddle->rectangle.width / 2.0f);
+    float angle = 50.0f * percentage;
+    float direction;
+    if (ball_velocity->x > 0)
+        direction = 1.0f;
+    else
+        direction = -1.0f;
+    BO_Vector2D v = BO_Vector2D_create_angle_length(angle, BO_ball_desired_speed);
+    v.x = abs(v.x);
+    v.x *= direction;
+
     ball_velocity->x = v.x;
     ball_velocity->y = v.y;
+    if (paddle_velocity->x > 0.1f || paddle_velocity->x < -0.1f)
+    {
+        ball_velocity->x += paddle_velocity->x / 3.0f;
+    }
 }
 
 void BO_reset_ball(BO_Entity *ball, BO_Vector2D *ball_velocity)
@@ -147,7 +173,7 @@ void BO_reset_ball(BO_Entity *ball, BO_Vector2D *ball_velocity)
     ball->rectangle.position.x = 300.0f;
     ball->rectangle.position.y = 400.0f;
     ball_velocity->x = 0.0f;
-    ball_velocity->y = -BO_ball_desired_velocity;
+    ball_velocity->y = -BO_ball_desired_speed;
 }
 
 bool BO_check_loose(BO_Entity *ball)

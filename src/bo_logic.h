@@ -24,11 +24,11 @@ void BO_update_ball(BO_Entity *ball, BO_Vector2D *velocity);
 
 void BO_update_paddle(BO_Entity *paddle, BO_Vector2D *velocity);
 
-void BO_ball_paddle_colision(BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle);
+void BO_ball_paddle_colision(BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle, const BO_Vector2D *paddle_velocity);
 
 bool BO_check_collision(const BO_Entity *entity1, const BO_Entity *entity2);
 
-void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle);
+void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle, const BO_Vector2D *paddle_velocity);
 
 void BO_reset_ball(BO_Entity *ball, BO_Vector2D *ball_velocity);
 

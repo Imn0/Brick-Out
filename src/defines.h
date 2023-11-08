@@ -13,6 +13,6 @@
 #define BO_paddle_paddle_y 750.0f
 
 #define BO_ball_size 10.0f
-#define BO_ball_desired_velocity 2.5f
+#define BO_ball_desired_speed 2.5f
 
 #endif // BO_DEFINES_H
