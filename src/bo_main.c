@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     BO_Vector2D paddle_velocity = BO_Vector2D_create();
 
     BO_Entity ball = {.rectangle = BO_Rectangle_create_xy(300.0f, 400.0f, 10.0f, 10.0f), .r = 0x00, .g = 0x00, .b = 0x00};
-    BO_Vector2D ball_velocity = BO_Vector2D_create_angle_length(45.0f, BO_ball_desired_velocity);
+    BO_Vector2D ball_velocity = BO_Vector2D_create_angle_length(45.0f, BO_ball_desired_speed - 1.0f);
     BO_Entity ui = {.rectangle = BO_Rectangle_create_xy(0.0f, 0.0f, BO_play_boundry_w, BO_play_boundry_h_top), .r = 0xaa, .g = 0x33, .b = 0x6a};
 
     BO_List *entities = NULL;
@@ -125,10 +125,10 @@ int main(int argc, char *argv[])
             }
         }
 
-        BO_update_paddle(&paddle, &paddle_velocity);
+        BO_update_pmmmmaddle(&paddle, &paddle_velocity);
         BO_update_ball(&ball, &ball_velocity);
 
-        BO_handle_collisions(entities, &ball, &ball_velocity, &paddle);
+        BO_handle_collisions(entities, &ball, &ball_velocity, &paddle, &paddle_velocity);
 
         // points calculation
         uint64_t new_points = (loop_start - game_start) / 1000;
