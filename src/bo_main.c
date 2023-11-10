@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        BO_update_pmmmmaddle(&paddle, &paddle_velocity);
+        BO_update_paddle(&paddle, &paddle_velocity);
         BO_update_ball(&ball, &ball_velocity);
 
         BO_handle_collisions(entities, &ball, &ball_velocity, &paddle, &paddle_velocity);

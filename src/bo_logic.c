@@ -148,10 +148,15 @@ void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_
 
 void BO_ball_paddle_colision(BO_Entity *ball, BO_Vector2D *ball_velocity, const BO_Entity *paddle, const BO_Vector2D *paddle_velocity)
 {
+    // calculate distance from center of the paddle
     float distance_from_middle = ball->rectangle.position.x - paddle->rectangle.position.x - paddle->rectangle.width / 2.0f;
     float percentage = abs(distance_from_middle) / (paddle->rectangle.width / 2.0f);
+
+    // calculate angle
     float angle = 50.0f * percentage;
     float direction;
+
+    // keep horizontal direction of the ball the same as before bounce
     if (ball_velocity->x > 0)
         direction = 1.0f;
     else
@@ -162,6 +167,8 @@ void BO_ball_paddle_colision(BO_Entity *ball, BO_Vector2D *ball_velocity, const 
 
     ball_velocity->x = v.x;
     ball_velocity->y = v.y;
+
+    // ajust ball speed based on paddle movement
     if (paddle_velocity->x > 0.1f || paddle_velocity->x < -0.1f)
     {
         ball_velocity->x += paddle_velocity->x / 3.0f;
