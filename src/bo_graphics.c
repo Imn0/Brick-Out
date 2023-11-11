@@ -26,7 +26,7 @@ ret:
 
 void BO_Graphics_post_render(const BO_Window *window)
 {
-    return SDL_RenderPresent(window->sdl_renderer);
+    SDL_RenderPresent(window->sdl_renderer);
 }
 
 BO_Result BO_Graphics_draw_rectangle(const BO_Window *window, const BO_Rectangle *rectangle, uint8_t r, uint8_t g, uint8_t b)

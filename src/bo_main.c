@@ -161,8 +161,7 @@ int main(int argc, char *argv[])
         SDL_Texture *Message = SDL_CreateTextureFromSurface(window->sdl_renderer, surfaceMessage);
         SDL_RenderCopy(window->sdl_renderer, Message, NULL, &Message_rect);
 
-        // BO_Graphics_post_render(window);
-        SDL_RenderPresent(window->sdl_renderer);
+        BO_Graphics_post_render(window);
 
         uint64_t delta = SDL_GetTicks() - loop_start;
         if (delta < framerate_cap)
