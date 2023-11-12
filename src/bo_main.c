@@ -42,32 +42,43 @@
 
 int main(int argc, char *argv[])
 {
+    // load font
     TTF_Init();
     TTF_Font *Pixel = TTF_OpenFont("../data/fonts/PixelForce.ttf", 24);
-
     SDL_Color White = {255, 255, 255};
 
-    BO_Entity paddle = {.rectangle = BO_Rectangle_create_xy(300.0f, BO_paddle_paddle_y, 80.0f, BO_paddle_height), .r = 0xaa, .g = 0x33, .b = 0x6a};
+    // create paddle, -1 hp for infinite health
+    BO_Entity paddle = {.rectangle = BO_Rectangle_create_xy(300.0f, BO_paddle_paddle_y, 80.0f, BO_paddle_height), .hp = -1, .r = 0xaa, .g = 0x33, .b = 0x6a};
     BO_Vector2D paddle_velocity = BO_Vector2D_create();
 
-    BO_Entity ball = {.rectangle = BO_Rectangle_create_xy(300.0f, 400.0f, 10.0f, 10.0f), .r = 0x00, .g = 0x00, .b = 0x00};
+    // create ball, -1 hp for infinite health
+    BO_Entity ball = {.rectangle = BO_Rectangle_create_xy(300.0f, 400.0f, 10.0f, 10.0f), .hp = -1, .r = 0x00, .g = 0x00, .b = 0x00};
     BO_Vector2D ball_velocity = BO_Vector2D_create_angle_length(45.0f, BO_ball_desired_speed - 1.0f);
-    BO_Entity ui = {.rectangle = BO_Rectangle_create_xy(0.0f, 0.0f, BO_play_boundry_w, BO_play_boundry_h_top), .r = 0xaa, .g = 0x33, .b = 0x6a};
 
-    BO_List *entities = NULL;
-    CHECK_SUCCESS(BO_List_assign(&entities), "failed to assign entities list");
-
-    CHECK_SUCCESS(BO_List_push_back(entities, &paddle), "failed to add paddle");
-    CHECK_SUCCESS(BO_List_push_back(entities, &ball), "failed to add ball");
-    CHECK_SUCCESS(BO_List_push_back(entities, &ui), "failed to add ui element");
-
-    BO_init_blocks(entities);
-
-    BO_ListItr *itr = NULL;
-    CHECK_SUCCESS(BO_List_iterator_assign_list(entities, &itr), "failed to assign itr");
+    // create ui element, -1 hp for infinite health
+    BO_Entity ui = {.rectangle = BO_Rectangle_create_xy(0.0f, 0.0f, BO_play_boundry_w, BO_play_boundry_h_top), .hp = -1, .r = 0xaa, .g = 0x33, .b = 0x6a};
 
     BO_Window *window;
     CHECK_SUCCESS(BO_Window_create(&window), "failed to window");
+
+    BO_List *entities = NULL;
+    CHECK_SUCCESS(BO_List_assign(&entities), "failed to assign entities list");
+    CHECK_SUCCESS(BO_List_push_back(entities, &paddle), "failed to add paddle");
+    CHECK_SUCCESS(BO_List_push_back(entities, &ball), "failed to add ball");
+    CHECK_SUCCESS(BO_List_push_back(entities, &ui), "failed to add ui element");
+    BO_init_blocks(entities);
+
+    // load breaking block texture
+    SDL_Surface *tmp_surface = IMG_Load("../data/textures/breaking.png");
+    SDL_Texture *breaking_texture = SDL_CreateTextureFromSurface(window->sdl_renderer, tmp_surface);
+    SDL_FreeSurface(tmp_surface);
+    SDL_Rect texture_rect;
+    // width and height of the texture are constant
+    texture_rect.w = BO_paddle_width;  // the width of the texture
+    texture_rect.h = BO_paddle_height; // the height of the texture
+
+    BO_ListItr *itr = NULL;
+    CHECK_SUCCESS(BO_List_iterator_assign_list(entities, &itr), "failed to assign itr");
 
     bool running = true;
     bool keys_to_process = true;
@@ -144,7 +155,10 @@ int main(int argc, char *argv[])
         while (!BO_List_iterator_at_end(itr))
         {
             BO_Entity *entity = (BO_Entity *)BO_List_iterator_value(itr);
-            BO_Graphics_draw_rectangle(window, &entity->rectangle, entity->r, entity->g, entity->b);
+            texture_rect.x = entity->rectangle.position.x;
+            texture_rect.y = entity->rectangle.position.y;
+            BO_Graphics_display_entity(window, entity, texture_rect, breaking_texture);
+            // BO_Graphics_draw_rectangle(window, &entity->rectangle, entity->r, entity->g, entity->b);
 
             BO_List_iterator_advance(&itr);
         }
@@ -159,6 +173,7 @@ int main(int argc, char *argv[])
         Message_rect.w = 33 * ((int)log10(points) + 1); // controls the width of the rect
         Message_rect.h = 48;                            // controls the height of the rect
         SDL_Texture *Message = SDL_CreateTextureFromSurface(window->sdl_renderer, surfaceMessage);
+        SDL_FreeSurface(surfaceMessage);
         SDL_RenderCopy(window->sdl_renderer, Message, NULL, &Message_rect);
 
         BO_Graphics_post_render(window);

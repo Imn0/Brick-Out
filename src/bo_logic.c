@@ -43,6 +43,7 @@ void BO_create_row(BO_List *entities, float y_pos, uint8_t r, uint8_t g, uint8_t
         brick->r = r;
         brick->g = g;
         brick->b = b;
+        brick->hp = 2;
 
         CHECK_SUCCESS(BO_List_push_back_dtor(entities, brick, &free), "Brick add fail");
 
@@ -129,7 +130,12 @@ void BO_handle_collisions(BO_List *entities, BO_Entity *ball, BO_Vector2D *ball_
 
             if (BO_check_collision(ball, brick))
             {
-                BO_List_remove(entities, itr);
+                brick->hp--;
+                if (brick->hp < 1)
+                {
+                    BO_List_remove(entities, itr);
+                }
+
                 ball_velocity->y *= -1.0f;
 
                 break;

@@ -33,7 +33,7 @@ void BO_Rectangle_translate_xy(BO_Rectangle *rectangle, float x, float y)
     BO_vector2D_add_xy(&rectangle->position, x, y);
 }
 
-void BO_Rectangle_set_position(BO_Rectangle *rectangle, BO_Vector2D *position)
+void BO_Rectangle_set_position(BO_Rectangle *rectangle, const BO_Vector2D *position)
 {
     rectangle->position = *position;
 }

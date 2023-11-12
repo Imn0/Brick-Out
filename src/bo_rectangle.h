@@ -21,7 +21,7 @@ void BO_Rectangle_translate(BO_Rectangle *rectangle, BO_Vector2D *translation);
 
 void BO_Rectangle_translate_xy(BO_Rectangle *rectangle, float x, float y);
 
-void BO_Rectangle_set_position(BO_Rectangle *rectangle, BO_Vector2D *position);
+void BO_Rectangle_set_position(BO_Rectangle *rectangle, const BO_Vector2D *position);
 
 void BO_Rectangle_set_position_xy(BO_Rectangle *rectangle, float x, float y);
 

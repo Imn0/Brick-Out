@@ -14,6 +14,7 @@ typedef struct BO_Entity
     uint8_t r;
     uint8_t g;
     uint8_t b;
+    int hp;
 } BO_Entity;
 
 void BO_init_blocks(BO_List *entities);

@@ -1,6 +1,8 @@
 #include "bo_graphics.h"
 #include "bo_rectangle.h"
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <stdint.h>
 
 BO_Result BO_Graphics_pre_render(const BO_Window *window)
@@ -27,6 +29,18 @@ ret:
 void BO_Graphics_post_render(const BO_Window *window)
 {
     SDL_RenderPresent(window->sdl_renderer);
+}
+
+BO_Result BO_Graphics_display_entity(const BO_Window *window, const BO_Entity *entity, SDL_Rect texture_rect, SDL_Texture *texture)
+{
+    BO_Result result = BO_SUCCESS;
+    result = BO_Graphics_draw_rectangle(window, &entity->rectangle, entity->r, entity->g, entity->b);
+    if (entity->hp == 1)
+    {
+        SDL_RenderCopy(window->sdl_renderer, texture, NULL, &texture_rect);
+    }
+
+    return result;
 }
 
 BO_Result BO_Graphics_draw_rectangle(const BO_Window *window, const BO_Rectangle *rectangle, uint8_t r, uint8_t g, uint8_t b)
